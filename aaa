@@ -1,0 +1,405 @@
+package de.hs_lu.o2s.v3.cardgames.copy;
+
+import java.lang.reflect.Array;
+
+public class Spielkarte {
+	/**
+	 * Farbe der Karte (Kreuz, Pik, Herz, Karo)
+	 */
+	private String farbe;
+
+	/**
+	 * Wert der Karte (2,3,...,10, Bube, Dame, KÃ¶nig, As, Joker)
+	 */
+	private String wert;
+
+	// gibt String aus, Syso ist nötig in main
+	public String toString() {
+
+		String status = "Die Karte hat den Wert " + wert + " und die Farbe " + farbe;
+		return status;
+	}
+
+	public String toStringKurz() {
+		return farbe + " " + wert;
+	}
+
+	// selbe wie toString nur ohne Syso Befehl in main
+	public void drukDich() {
+		System.out.println(this.toString());
+	}
+
+	public String getFarbe() {
+		return farbe;
+	}
+
+	public String getWert() {
+		return wert;
+	}
+
+	public int getPunktwert() {
+		int myVal = 0;
+		String myWert = this.getWert();
+		if (myWert.equals("2"))
+			myVal = 2;
+		if (myWert.equals("3"))
+			myVal = 3;
+		if (myWert.equals("4"))
+			myVal = 4;
+		if (myWert.equals("5"))
+			myVal = 5;
+		if (myWert.equals("6"))
+			myVal = 6;
+		if (myWert.equals("7"))
+			myVal = 7;
+		if (myWert.equals("8"))
+			myVal = 8;
+		if (myWert.equals("9"))
+			myVal = 9;
+		if (myWert.equals("10"))
+			myVal = 10;
+		if (myWert.equals("bube"))
+			myVal = 2;
+		if (myWert.equals("dame"))
+			myVal = 3;
+		if (myWert.equals("koenig"))
+			myVal = 4;
+		if (myWert.equals("as"))
+			myVal = 11;
+		return myVal;
+	}
+
+	public void setFarbe(String farbe) {
+		this.farbe = farbe;
+	}
+
+	public void setWert(String wert) {
+		this.wert = wert;
+	}
+
+	public String toString(boolean kurz) {
+		String retString;
+		if (kurz == true) {
+			retString = this.toStringKurz();
+		} else {
+			retString = this.toString();
+		}
+		return retString;
+	}
+
+	public Spielkarte(String farbe, String wert) {
+		this.farbe = farbe;
+		this.wert = wert;
+	}
+	
+	public Spielkarte() {
+		System.out.println("Achtung, Spielkarte ohne Werte!");
+	}
+}
+
+
+
+
+
+
+public class Kartenspiel {
+
+	/**
+	 * Spielkarte ist durch Farbe und Wert charakterisiert
+	 * deshalb werden alle Karten in einem zwei dimensionalen Array 
+	 * vom Typ Spielkarte abgelegt
+	 * (Keuzprodukt aus Farbe und Wert
+	 */
+	private Spielkarte[][] kartenAA;
+	/**
+	 * alle möglichen Kartenfarben
+	 */
+	private String[] farbeA = { "kreuz", "pik", "herz", "karo" };
+	/**
+	 * alle möglichen Kartenwerte
+	 */
+	private String[] werteA = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "bube", "dame", "koenig", "as" };
+	/**
+	 * Konstruktor: erzeugt normales Kartenspiel
+	 */
+	public Kartenspiel() {
+		// initialisiertung des zweidim. Arrays
+		kartenAA = new Spielkarte[farbeA.length][werteA.length];
+
+		// jede Spielkarte einmal anlegen und im kartenAA-Array speichern
+		for (int f = 0; f < farbeA.length; f++) {
+			for (int w = 0; w < werteA.length; w++) {
+				kartenAA[f][w] = new Spielkarte(farbeA[f], werteA[w]);
+			}
+		}
+	}
+	/**
+	 * Anzahl der Karten im Kartenspiel
+	 * @return
+	 */
+	public int getKartenAnzahl() {
+		return farbeA.length * werteA.length;
+	}
+	/**
+	 * gibt den kumulierten Punktewert aller Karten im Spiel zurück
+	 * @return
+	 */
+	public int getPunktwert() {
+		int gesamtPunktwert = 0;
+		
+		// von jeder Spielkarte den Punktwert auslesen und zum gesamtPuktwert addieren
+				for (int f = 0; f < farbeA.length; f++) {
+					for (int w = 0; w < werteA.length; w++) {
+						gesamtPunktwert += kartenAA[f][w].getPunktwert();
+					}
+				}
+		
+		return gesamtPunktwert;
+	}
+	/**
+	 * GetMethode für das Attribut KartenAA
+	 * @return zweidimensionales Array aller Karten
+	 */
+	public Spielkarte[][] getKartenAA() {
+		return kartenAA;
+	}
+	/**
+	 * Ausgabe des Kartenspiels
+	 */
+	public String toString() {
+		String myString = "Dies ist ein Kartenspiel mit " + this.getKartenAnzahl() +
+				" Karten und einem gesamt Punktwert von " + this.getPunktwert() + " Punkten\n";
+		
+		for (int f = 0; f < farbeA.length; f++) {
+			for (int w = 0; w < werteA.length; w++) {
+				myString += kartenAA[f][w].toString() + "\n";
+			}
+		}
+		
+		return myString;
+	}
+
+}
+
+
+import junit.framework.TestCase;
+
+public class TestKartenspiel extends TestCase {
+	Kartenspiel myKartenspiel;
+	public void setUp() {
+		myKartenspiel = new Kartenspiel();
+	}
+
+	public void testGetKartenAnzahl() {
+		assertEquals(myKartenspiel.getKartenAnzahl(),52);
+	}
+	
+	public void testGetPunktwert() {
+		assertEquals(myKartenspiel.getPunktwert(),296);
+	}
+
+	public void testGetKartenAA() {
+		//testet ob methode getKartenAA eine Instanz
+		//vom TypSpielkarte [][] zurück gibt
+		assertTrue(myKartenspiel.getKartenAA() instanceof Spielkarte[][]);
+	}
+
+	public void testToString() {
+		System.out.println(myKartenspiel.toString());
+	}
+
+}
+
+
+
+
+public class Kartenstapel {
+
+	/**
+	 * Array vom Typ Spielkarte, welches alle Karten enthält die auf dem Stapel liegen
+	 * verweist also auf Karten, die wiederum auf werte und farben
+	 * Index: 0: unterste Karte; kartenA.length-1; oberste Karte
+	 */
+	private Spielkarte[] kartenA;
+	Kartenstapel myStapel1 = new Kartenstapel();
+	Kartenspiel mySpiel1 = new Kartenspiel();
+	Kartenstapel myStapel2 = new Kartenstapel(mySpiel1);
+	
+	/**
+	 * Konstruktor für leeren Kartenstapel
+	 */
+	public Kartenstapel() {
+		kartenA = new Spielkarte[0];
+	}
+	
+	/**
+	 * Kontruktor für Kartenstapel mit genau einer Karte
+	 */
+	public Kartenstapel(Spielkarte karte) {
+		kartenA = new Spielkarte[1];
+		kartenA[0] = karte;
+	}
+	
+	/**
+	 * Konstruktor zur Generierung eines Kartenstpel aus dem gegebenen Spiel
+	 */
+	public Kartenstapel(Kartenspiel spiel) {
+		kartenA = new Spielkarte[spiel.getKartenAnzahl()];
+		
+		//kartenAA referenziert auf die im Spiel angelegten  einzelnen Karten
+		Spielkarte[][] kartenAA = spiel.getKartenAA();
+		
+		int index = 0;
+		//mit kartenAA.length bekommen wird die länge des äußeren Arrays
+		for(int i = 0; i < kartenAA.length; i++) {
+			//mit kartenAA[0].length holen wir uns die länge des inneren Arrays
+			for(int j = 0; j < kartenAA[0].length; j++) {
+				//hier wollen wir in dem Array kartenA die jeweilige Spielkarte abspeichern
+				kartenA[index] = kartenAA[i][j];
+				index++;
+			}
+		}
+	}
+	
+	/**
+	 * legt die übergebene Karte auf den Kartenstapel
+	 */
+	public void push(Spielkarte newCard) {
+		//ein um 1 größeres Array anlegen
+		Spielkarte[] kartenNeu = new Spielkarte[kartenA.length + 1];
+		
+		//die bisherigen Karten in das neue Array kopieren
+		System.arraycopy(kartenA, 0, kartenNeu, 0, kartenA.length);
+	
+		//die neue Karte auf den Stapel legen ("oben drauf")
+		kartenNeu[kartenA.length] = newCard;
+		
+		kartenA = kartenNeu;
+		
+	}
+	/**
+	 * Hebt eine Karte oben vom Stapel ab
+	 * @return
+	 */
+	public Spielkarte pop() {
+		//ein um 1 kleineres Array anlegen
+		Spielkarte[] kartenNeu = new Spielkarte[kartenA.length - 1];
+		
+		Spielkarte letzteA=kartenA[kartenA.length-1];
+		
+		
+		
+		//ins neue Array kopieren bis auf die letzte Karte
+		System.arraycopy(kartenA, 0, kartenNeu, 0, kartenA.length-1);
+		return letzteA;
+		
+	}
+	/**
+	 * Liefert oberste Karte vom Stapel ohne abzuheben
+	 * @return
+	 */
+	public Spielkarte top() {				
+		//gleiche wie pop, bloß ohne Array verkürzung
+		Spielkarte letzteA=kartenA[kartenA.length-1];	
+		return letzteA;
+	}
+	/**
+	 * true falls stapel keine karte enthält, andernfalls false
+	 * @return
+	 */
+	public boolean empty() {
+		boolean s = true;
+		
+		if (kartenA.length==0) {
+			return s;
+		}
+		
+		return false;
+	}
+	/**
+	 * Ein weiteres Spiel auf den Stapel legel
+	 * @param s
+	 */
+	public void addKartenspiel(Kartenspiel s) {
+		
+	}
+	/**
+	 * Einen weiteren Stapel auf den Stapel legen
+	 * @param s
+	 */
+	public void addKartenstapel(Kartenstapel s) {
+		
+	}
+	/**
+	 * Anzahl an Karten im Stapel zurückgeben
+	 * @return
+	 */
+	public int getKartenAnzahl() {
+		return kartenA.length;
+	}
+	/**
+	 * Summe der Punktewerte aller Karten zurückgeben
+	 * @return
+	 */
+	public int getPunktwert() {
+	int gesamtPunktwert = 0;
+		
+		// von jeder Spielkarte den Punktwert auslesen und zum gesamtPuktwert addieren
+				for (int f = 0; f < kartenA.length; f++) {
+						gesamtPunktwert += kartenA[f].getPunktwert();
+					}		
+		return gesamtPunktwert;
+	}
+	/**
+	 * entfernt letzte Karte aus Stapel und gibt diese zurück
+	 * @return
+	 */
+	public Spielkarte last() {
+		
+	}
+	/**
+	 * gibt zufällige Karte zurück ohne diese zu entfernen
+	 * @return
+	 */
+	public Spielkarte popRandomCard() {
+		
+	}
+	/**
+	 * alle Karten im Kartenstapel zurückgeben
+	 */
+	public String toString() {
+		String myString = "Dies ist ein Kartenspiel mit " + this.getKartenAnzahl() +
+				" Karten und einem gesamt Punktwert von " + this.getPunktwert() + " Punkten\n";
+		
+		for (int f = 0; f < kartenA.length; f++) {			
+				myString += kartenA[f].toString() + "\n";
+		}
+		return myString;
+	}
+}
+
+
+public class AppTestKartenstapel {
+
+	public static void main(String[] args) {
+		//neues Kartenspiel anlegen
+		Kartenspiel spiel1 = new Kartenspiel();
+		
+		//das Spiel auf Kartenstapel legen
+		Kartenstapel stapel1 = new Kartenstapel(spiel1);
+		
+		Spielkarte karte1 = spiel1.getKartenAA()[0][0]; //kreuz 2
+		Spielkarte karte2 = spiel1.getKartenAA()[1][3]; //pik 4
+		
+		stapel1.push(karte1); //Stapel hat zunächst 52 Karten, nach push 53
+		stapel1.push(karte2); //Stapel hat zunächst 53 Karten, nach push 54
+		
+	}
+
+}
+
+
+
+
+
+
